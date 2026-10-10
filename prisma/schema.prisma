@@ -1,0 +1,174 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(uuid())
+  clerkUserId   String    @unique // clerk user id
+  email         String    @unique
+  name          String?
+  imageUrl      String?
+  industry      String?    // Combined industry-subindustry (e.g., "tech-software-development")
+  industryInsight IndustryInsight? @relation(fields: [industry], references: [industry])
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Profile fields
+  bio           String?
+  experience    Int?      // Years of experience
+  
+  // Relations
+  skills        String[]  // Array of skills
+  assessments   Assessment[]
+  resumes       Resume[]
+  coverLetter   CoverLetter[]
+  behavioralInterviews BehavioralInterview[]
+  liveInterviews LiveInterviewSession[]
+  codingAssessments CodingAssessment[]
+
+  @@index([industry])
+}
+
+model LiveInterviewSession {
+  id                  String    @id @default(cuid())
+  userId              String
+  user                User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  persona             String    // "FAANG Engineering Lead", "Empathetic HR Manager", "Startup CTO"
+  targetRole          String?
+  durationSeconds     Int       @default(0)
+  overallScore        Float     // 1-10
+  metrics             Json      // { technicalAccuracy: number, clarity: number, pacingWpm: number, confidence: number }
+  conversation        Json[]    // Array of { role: "interviewer" | "candidate", text: string, timestamp: string }
+  summaryFeedback     String?   @db.Text
+  strengths           String[]
+  improvements        String[]
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  @@index([userId, createdAt(sort: Desc)])
+}
+
+model CodingAssessment {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  problemId       String
+  problemTitle    String
+  language        String   // "javascript" | "typescript" | "python"
+  code            String   @db.Text
+  status          String   // "PASSED" | "FAILED" | "ACCEPTED"
+  score           Float    // 0-100
+  timeComplexity  String   // e.g. "O(N)"
+  spaceComplexity String   // e.g. "O(1)"
+  passedTests     Int      @default(0)
+  totalTests      Int      @default(0)
+  executionMs     Int?     @default(0)
+  feedback        String?  @db.Text
+  cleanCodeScore  Int?     // 1-10
+  idiomaticScore  Int?     // 1-10
+  antiPatterns    String[]
+  hintsUsed       Int      @default(0)
+  difficulty      String?
+  topic           String?
+  optimalSolution String?  @db.Text
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([userId, createdAt(sort: Desc)])
+}
+
+model BehavioralInterview {
+  id              String    @id @default(cuid())
+  userId          String
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  targetRole      String?
+  overallScore    Float     // 1-10 overall average STAR score
+  starScores      Json      // { situation: number, task: number, action: number, result: number, clarity: number }
+  questions       Json[]    // Array of { question, transcript, evaluation }
+  feedback        String?   // Overall summary feedback
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([userId, createdAt(sort: Desc)])
+}
+
+model Assessment {
+  id            String    @id @default(cuid())
+  userId        String
+  user          User      @relation(fields: [userId], references: [id])
+  quizScore     Float     // Overall quiz score
+  questions     Json[]    // Array of {question, answer, userAnswer, isCorrect}
+  category      String    // "Technical", "Behavioral", etc.
+  improvementTip String?  // AI-generated improvement tip
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([userId, category])
+}
+
+model Resume {
+  id                    String    @id @default(cuid())
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id])
+  title                 String    @default("Default Resume")
+  content               String    @db.Text // Markdown content
+  atsScore              Float?
+  feedback              String?
+  targetRole            String?
+  targetJobDescription  String?   @db.Text
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([userId, updatedAt(sort: Desc)])
+}
+
+model CoverLetter {
+  id              String    @id @default(cuid())
+  userId          String
+  user            User      @relation(fields: [userId], references: [id])
+  content         String    // Markdown content
+  jobDescription  String?
+  companyName     String    // Name of the company applying to
+  jobTitle        String    // Position applying for
+  status          String    @default("draft") // draft, completed
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([userId, status])
+}
+
+// Combined Industry Trends and Salary Insights
+model IndustryInsight {
+  id            String    @id @default(cuid())
+  industry      String    @unique  // The industry this data belongs to (e.g., "tech-software-development")
+  
+  // Users in this industry
+  users         User[]
+  
+  // Salary data
+  salaryRanges  Json[]    // Array of { role: string, min: float, max: float, median: float, location: string? }
+  
+  // Industry trends
+  growthRate    Float     // Industry growth rate
+  demandLevel   String    // "High", "Medium", "Low"
+  topSkills     String[]  // Most in-demand skills
+  
+  // Market conditions
+  marketOutlook String    // "Positive", "Neutral", "Negative"
+  keyTrends     String[]  // Array of current industry trends
+  
+  // Learning suggestions
+  recommendedSkills String[]  // Skills recommended for the industry
+  
+  lastUpdated   DateTime  @default(now())
+  nextUpdate    DateTime  // Scheduled update time
+
+  @@index([nextUpdate])
+}
