@@ -41,6 +41,7 @@ import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import AudioVisualizer from "./audio-visualizer";
+import LiveVoiceTranscriber from "@/components/interview/live-voice-transcriber";
 import {
   converseLiveAgent,
   evaluateLiveInterviewSession,
@@ -728,49 +729,35 @@ export default function LiveAgentClient({ initialRole = "Senior Software Enginee
             })}
           </div>
 
-          {/* Real-time Candidate Input & Dictation Area */}
-          <div className="space-y-2 pt-2">
-            <div className="flex items-center justify-between text-xs text-muted-foreground">
-              <span className="font-medium flex items-center gap-1.5">
-                <Mic className="h-3.5 w-3.5 text-primary animate-pulse" />
-                Your Voice / Spoken Utterance
-              </span>
-              <div className="flex items-center gap-2">
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleFillSample}
-                  className="h-6 px-2 text-xs text-primary gap-1"
-                >
-                  <Sparkles className="h-3 w-3" /> Sample Answer
-                </Button>
-                <span>{currentCandidateInput ? currentCandidateInput.split(/\s+/).filter(Boolean).length : 0} words</span>
-              </div>
-            </div>
+          {/* Real-time Candidate Voice Input & Transcription Area */}
+          <div className="space-y-3 pt-2">
+            <LiveVoiceTranscriber
+              key={`agent-transcriber-${conversation.length}`}
+              initialTranscript={currentCandidateInput}
+              onTranscriptChange={({ full }) => setCurrentCandidateInput(full)}
+              onSendAnswer={(committedText) => handleSendResponse(committedText)}
+              placeholder="Speak directly to the interviewer. Your voice transcribes live character-by-character and auto-sends when you pause speaking..."
+              silenceTimeoutMs={2500}
+              enableSilenceDetection={true}
+            />
 
-            <div className="flex gap-2">
-              <Input
-                value={currentCandidateInput}
-                onChange={(e) => setCurrentCandidateInput(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && !e.shiftKey) {
-                    e.preventDefault();
-                    handleSendResponse();
-                  }
-                }}
-                placeholder="Speak clearly into your microphone, or type your answer and press Enter..."
-                className="h-12 text-sm"
-                disabled={agentStatus === "thinking" || agentStatus === "speaking"}
-              />
-
+            <div className="flex items-center justify-between text-xs text-muted-foreground px-1">
               <Button
-                onClick={() => handleSendResponse()}
-                disabled={!currentCandidateInput.trim() || agentStatus === "thinking" || agentStatus === "speaking"}
-                className="h-12 px-5 gap-1.5 font-semibold"
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={handleFillSample}
+                disabled={agentStatus === "thinking" || agentStatus === "speaking"}
+                className="h-6 px-2 text-xs text-primary gap-1 hover:bg-primary/5"
               >
-                <Send className="h-4 w-4" /> Send Answer
+                <Sparkles className="h-3 w-3" /> Quick Sample Answer
               </Button>
+
+              {agentStatus === "thinking" && (
+                <span className="flex items-center gap-1.5 text-primary text-xs font-medium">
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" /> {persona} is processing your response...
+                </span>
+              )}
             </div>
           </div>
         </CardContent>

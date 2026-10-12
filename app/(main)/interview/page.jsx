@@ -4,7 +4,7 @@ import PerformanceChart from "./_components/performace-chart";
 import QuizList from "./_components/quiz-list";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Phone, Mic, Code2 } from "lucide-react";
+import { Phone, PhoneCall, Mic, Code2 } from "lucide-react";
 import { checkUser } from "@/lib/checkUser";
 import { getIndustryCapabilities } from "@/lib/industryCapabilities";
 
@@ -52,6 +52,12 @@ export default async function InterviewPrepPage({ searchParams }) {
             <Button variant="outline" className="gap-2 border-primary/40 shadow-sm text-xs sm:text-sm">
               <Phone className="h-4 w-4" />
               Live Phone Agent
+            </Button>
+          </Link>
+          <Link href="/interview/phone-screen">
+            <Button variant="default" className="gap-2 bg-[#4F46E5] hover:bg-[#4338CA] text-white shadow-sm text-xs sm:text-sm font-semibold">
+              <PhoneCall className="h-4 w-4" />
+              Live Phone Screen
             </Button>
           </Link>
           <Link href="/interview/voice">

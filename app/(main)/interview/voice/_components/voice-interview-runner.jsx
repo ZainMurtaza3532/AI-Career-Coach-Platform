@@ -46,6 +46,7 @@ import {
   saveBehavioralInterview,
 } from "@/actions/interview";
 import BehavioralDashboardSummary from "./behavioral-dashboard-summary";
+import LiveVoiceTranscriber from "@/components/interview/live-voice-transcriber";
 
 export default function VoiceInterviewRunner({ initialRole = "" }) {
   // Session configuration & status
@@ -292,8 +293,9 @@ As a result, we launched the critical feature on schedule, improved API response
   };
 
   // Evaluate current answer
-  const handleEvaluateAnswer = async () => {
-    const wordCount = transcript ? transcript.trim().split(/\s+/).filter(Boolean).length : 0;
+  const handleEvaluateAnswer = async (customText = null) => {
+    const textToEvaluate = typeof customText === "string" ? customText : transcript;
+    const wordCount = textToEvaluate ? textToEvaluate.trim().split(/\s+/).filter(Boolean).length : 0;
     if (wordCount < 4) {
       toast.error("Please provide a more detailed response (at least a few words explaining your answer).");
       return;
@@ -305,11 +307,12 @@ As a result, we launched the critical feature on schedule, improved API response
     try {
       const currentQ = questions[currentIndex];
       const evaluation = await evaluateBehavioralAnswer({
-        transcript,
+        transcript: textToEvaluate,
         question: currentQ.question,
         targetRole,
       });
 
+      setTranscript(textToEvaluate);
       setCurrentEvaluation(evaluation);
       toast.success("Answer evaluated with STAR methodology!");
     } catch (error) {
@@ -636,137 +639,39 @@ As a result, we launched the critical feature on schedule, improved API response
         </CardHeader>
 
         <CardContent className="space-y-5 pt-2">
-          {/* Recording & Audio Visualizer Status */}
-          <div className="p-4 rounded-xl bg-muted/30 border border-border/60 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div
-                className={`relative flex items-center justify-center h-12 w-12 rounded-full border transition-all ${
-                  isRecording
-                    ? "bg-rose-500/20 border-rose-500 text-rose-500 animate-pulse"
-                    : "bg-muted border-border text-muted-foreground"
-                }`}
-              >
-                {isRecording ? <Mic className="h-6 w-6" /> : <MicOff className="h-6 w-6" />}
-              </div>
+          {/* Real-time Voice-to-Text Transcriber with Waveform & Silence Detection */}
+          {!currentEvaluation && (
+            <div className="space-y-3">
+              <LiveVoiceTranscriber
+                key={`transcriber-${currentIndex}`}
+                initialTranscript={transcript}
+                onTranscriptChange={({ full }) => setTranscript(full)}
+                onSendAnswer={(committedText) => handleEvaluateAnswer(committedText)}
+                placeholder="Speak clearly using the STAR framework (Situation, Task, Action, Result). Your speech transcribes in real-time character-by-character..."
+                silenceTimeoutMs={2500}
+                enableSilenceDetection={true}
+              />
 
-              <div>
-                <p className="font-semibold text-sm">
-                  {isRecording ? "Listening to your answer..." : "Microphone Idle"}
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  {isRecording
-                    ? "Speak clearly. Click Stop when finished."
-                    : "Click Record to dictate or type in the box below."}
-                </p>
-              </div>
-            </div>
-
-            {/* Audio Waveform Bars Simulation */}
-            {isRecording && (
-              <div className="flex items-center gap-1.5 h-8 px-3 py-1 rounded-lg bg-background/80 border">
-                {[10, 22, 14, 28, 16, 24, 12, 20].map((height, i) => (
-                  <span
-                    key={i}
-                    className="w-1.5 bg-rose-500 rounded-full animate-pulse"
-                    style={{
-                      height: `${height}px`,
-                      animationDelay: `${i * 100}ms`,
-                      animationDuration: "700ms",
-                    }}
-                  />
-                ))}
-              </div>
-            )}
-
-            {/* Mic Action Buttons */}
-            <div className="flex items-center gap-2">
-              {!isRecording ? (
-                <Button
-                  onClick={startRecording}
-                  disabled={isEvaluating}
-                  className="gap-2 bg-rose-600 hover:bg-rose-700 text-white font-medium shadow"
-                >
-                  <Mic className="h-4 w-4" />
-                  Start Recording
-                </Button>
-              ) : (
-                <Button
-                  onClick={stopRecording}
-                  variant="outline"
-                  className="gap-2 border-rose-500 text-rose-500 hover:bg-rose-500/10 font-medium"
-                >
-                  <MicOff className="h-4 w-4" />
-                  Stop Recording
-                </Button>
-              )}
-
-              {transcript && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setTranscript("")}
-                  className="text-xs text-muted-foreground"
-                  disabled={isRecording || isEvaluating}
-                >
-                  Clear
-                </Button>
-              )}
-            </div>
-          </div>
-
-          {/* Spoken Response Text Area */}
-          <div className="space-y-1.5">
-            <div className="flex items-center justify-between text-xs text-muted-foreground">
-              <span className="font-medium flex items-center gap-1">
-                <FileText className="h-3.5 w-3.5" /> Your Spoken Response (Live Transcript)
-              </span>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center justify-between text-xs text-muted-foreground pt-1 px-1">
                 <Button
                   type="button"
                   variant="ghost"
                   size="sm"
                   onClick={handleFillSampleAnswer}
-                  className="h-6 px-2 text-xs text-primary hover:text-primary gap-1"
+                  disabled={isEvaluating}
+                  className="h-7 text-xs text-primary gap-1.5 hover:bg-primary/5"
                 >
-                  <Sparkles className="h-3 w-3" />
-                  Fill Sample Answer
+                  <Sparkles className="h-3.5 w-3.5" />
+                  Load Sample STAR Response
                 </Button>
-                <span>
-                  {transcript ? transcript.trim().split(/\s+/).filter(Boolean).length : 0} words
-                </span>
-              </div>
-            </div>
-            <Textarea
-              value={transcript}
-              onChange={(e) => setTranscript(e.target.value)}
-              placeholder="Your spoken words will appear here automatically. You may also type or refine your answer directly before submitting..."
-              rows={5}
-              className="text-sm font-sans resize-y leading-relaxed"
-              disabled={isEvaluating}
-            />
-          </div>
 
-          {/* Evaluate Action Button */}
-          {!currentEvaluation && (
-            <div className="flex justify-end pt-2">
-              <Button
-                onClick={handleEvaluateAnswer}
-                disabled={isEvaluating || !transcript.trim() || isRecording}
-                size="lg"
-                className="gap-2 font-semibold shadow-md"
-              >
-                {isEvaluating ? (
-                  <>
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    Analyzing STAR Framework with Gemini...
-                  </>
-                ) : (
-                  <>
-                    <Sparkles className="h-4 w-4" />
-                    Evaluate Answer (STAR Criteria)
-                  </>
+                {isEvaluating && (
+                  <div className="flex items-center gap-2 text-primary font-medium text-xs">
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                    <span>Analyzing STAR methodology with Gemini AI...</span>
+                  </div>
                 )}
-              </Button>
+              </div>
             </div>
           )}
 
