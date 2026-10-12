@@ -4,6 +4,7 @@ import { db } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 import { callGeminiJSON } from "@/lib/gemini";
 import { unstable_cache, revalidateTag } from "next/cache";
+import { getAuthenticatedDbUser } from "@/lib/checkUser";
 
 /**
  * AI Industry Trends generation
@@ -70,13 +71,8 @@ export async function getIndustryInsights() {
   const { userId } = await auth();
   if (!userId) throw new Error("Unauthorized");
 
-  // Strict projection query: only fetch industry
-  const user = await db.user.findUnique({
-    where: { clerkUserId: userId },
-    select: {
-      industry: true,
-    },
-  });
+  // Request-memoized user lookup
+  const user = await getAuthenticatedDbUser(userId);
 
   if (!user || !user.industry) {
     throw new Error("User or assigned industry not found");

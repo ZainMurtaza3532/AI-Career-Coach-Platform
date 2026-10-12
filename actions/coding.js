@@ -5,6 +5,7 @@ import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 import { callGeminiJSON } from "@/lib/gemini";
 import { CODING_PROBLEMS, CODING_LANGUAGES } from "@/data/coding-problems";
+import { getAuthenticatedDbUser } from "@/lib/checkUser";
 
 /**
  * AI Dynamic Question Generator
@@ -20,10 +21,7 @@ export async function generateCodingSession({
   const { userId } = await auth();
   if (!userId) throw new Error("Unauthorized");
 
-  const user = await db.user.findUnique({
-    where: { clerkUserId: userId },
-    select: { id: true, experience: true, skills: true, industry: true },
-  });
+  const user = await getAuthenticatedDbUser(userId);
   if (!user) throw new Error("User record not found");
 
   const count = Math.min(Math.max(parseInt(questionCount, 10) || 3, 1), 5);
@@ -360,10 +358,7 @@ export async function evaluateCodingSession({
   const { userId } = await auth();
   if (!userId) throw new Error("Unauthorized");
 
-  const user = await db.user.findUnique({
-    where: { clerkUserId: userId },
-    select: { id: true, experience: true, skills: true, industry: true },
-  });
+  const user = await getAuthenticatedDbUser(userId);
   if (!user) throw new Error("User record not found");
 
   if (!submissions || submissions.length === 0) {
@@ -560,10 +555,7 @@ export async function getCodingAssessments() {
     const { userId } = await auth();
     if (!userId) return [];
 
-    const user = await db.user.findUnique({
-      where: { clerkUserId: userId },
-      select: { id: true },
-    });
+    const user = await getAuthenticatedDbUser(userId);
     if (!user || !db.codingAssessment) return [];
 
     return await db.codingAssessment.findMany({

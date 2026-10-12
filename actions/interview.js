@@ -8,19 +8,13 @@ import {
   getIndustryCapabilities,
   getDomainFallbackQuestions,
 } from "@/lib/industryCapabilities";
+import { getAuthenticatedDbUser } from "@/lib/checkUser";
 
 export async function generateQuiz() {
   const { userId } = await auth();
   if (!userId) throw new Error("Unauthorized");
 
-  const user = await db.user.findUnique({
-    where: { clerkUserId: userId },
-    select: {
-      industry: true,
-      skills: true,
-      experience: true,
-    },
-  });
+  const user = await getAuthenticatedDbUser(userId);
 
   if (!user) throw new Error("User not found");
 
@@ -116,9 +110,7 @@ export async function saveQuizResult(questions, answers, score) {
   const { userId } = await auth();
   if (!userId) throw new Error("Unauthorized");
 
-  const user = await db.user.findUnique({
-    where: { clerkUserId: userId },
-  });
+  const user = await getAuthenticatedDbUser(userId);
 
   if (!user) throw new Error("User not found");
 
@@ -185,9 +177,7 @@ export async function getAssessments() {
   const { userId } = await auth();
   if (!userId) throw new Error("Unauthorized");
 
-  const user = await db.user.findUnique({
-    where: { clerkUserId: userId },
-  });
+  const user = await getAuthenticatedDbUser(userId);
 
   if (!user) throw new Error("User not found");
 
@@ -212,10 +202,7 @@ export async function generateBehavioralQuestions(targetRole) {
   const { userId } = await auth();
   if (!userId) throw new Error("Unauthorized");
 
-  const user = await db.user.findUnique({
-    where: { clerkUserId: userId },
-    select: { industry: true, skills: true },
-  });
+  const user = await getAuthenticatedDbUser(userId);
 
   const roleOrIndustry = targetRole || user?.industry || "Software & Technology";
 
@@ -345,9 +332,7 @@ export async function saveBehavioralInterview({
   const { userId } = await auth();
   if (!userId) throw new Error("Unauthorized");
 
-  const user = await db.user.findUnique({
-    where: { clerkUserId: userId },
-  });
+  const user = await getAuthenticatedDbUser(userId);
 
   if (!user) throw new Error("User not found");
 
@@ -381,9 +366,7 @@ export async function getBehavioralInterviews() {
   const { userId } = await auth();
   if (!userId) throw new Error("Unauthorized");
 
-  const user = await db.user.findUnique({
-    where: { clerkUserId: userId },
-  });
+  const user = await getAuthenticatedDbUser(userId);
 
   if (!user) throw new Error("User not found");
 
@@ -410,9 +393,7 @@ export async function getBehavioralInterviewById(id) {
   const { userId } = await auth();
   if (!userId) throw new Error("Unauthorized");
 
-  const user = await db.user.findUnique({
-    where: { clerkUserId: userId },
-  });
+  const user = await getAuthenticatedDbUser(userId);
 
   if (!user) throw new Error("User not found");
 

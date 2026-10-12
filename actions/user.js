@@ -4,6 +4,7 @@ import { db } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 import { generateAIInsights } from "./dashboard";
+import { getAuthenticatedDbUser } from "@/lib/checkUser";
 
 export async function updateUser(data) {
   const { userId } = await auth();
@@ -78,14 +79,7 @@ export async function getUserOnboardingStatus() {
   if (!userId) throw new Error("Unauthorized");
 
   try {
-    const user = await db.user.findUnique({
-      where: {
-        clerkUserId: userId,
-      },
-      select: {
-        industry: true,
-      },
-    });
+    const user = await getAuthenticatedDbUser(userId);
 
     return {
       isOnboarded: !!user?.industry,

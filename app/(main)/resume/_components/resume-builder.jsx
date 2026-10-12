@@ -24,7 +24,6 @@ import useFetch from "@/hooks/use-fetch";
 import { useUser } from "@clerk/nextjs";
 import { entriesToMarkdown } from "@/app/lib/helper";
 import { resumeSchema } from "@/app/lib/schema";
-import html2pdf from "html2pdf.js/dist/html2pdf.min.js";
 
 const ResumeBuilder = forwardRef(function ResumeBuilder(
   {
@@ -156,6 +155,8 @@ const ResumeBuilder = forwardRef(function ResumeBuilder(
         jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
       };
 
+      const html2pdfModule = await import("html2pdf.js/dist/html2pdf.min.js");
+      const html2pdf = html2pdfModule.default || html2pdfModule;
       await html2pdf().set(opt).from(element).save();
       toast.success("PDF exported successfully!");
     } catch (error) {
