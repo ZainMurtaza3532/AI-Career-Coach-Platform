@@ -275,8 +275,9 @@ export default function ResumeSwitcher({
         </div>
       </div>
 
-      {/* Right: Job Tailor Button & Direct Export Options */}
+      {/* Right: Action Buttons, Tailor, Print & Export */}
       <div className="flex flex-wrap items-center gap-2">
+
         <Button
           onClick={() => setIsTailorOpen(true)}
           disabled={!activeResume || isActionLoading}

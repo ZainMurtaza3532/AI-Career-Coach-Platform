@@ -346,3 +346,4 @@ export async function improveWithAI({ current, type }) {
     throw new Error("Failed to improve content");
   }
 }
+
