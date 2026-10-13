@@ -272,7 +272,9 @@ export default function CodeEditorSandbox({ initialAssessments = [] }) {
             <h1 className="text-2xl md:text-3xl font-extrabold gradient-title">
               Technical Coding Sandbox
             </h1>
-
+            <Badge variant="outline" className="border-border text-xs font-mono">
+              Co-Pilot Active
+            </Badge>
           </div>
           <p className="text-xs md:text-sm text-muted-foreground">
             Solve FAANG-caliber algorithmic challenges with Monaco editor, asymptotic Big-O audits, and progressive non-spoiler hints.
