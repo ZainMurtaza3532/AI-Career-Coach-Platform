@@ -3,6 +3,12 @@ import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import CoverLetterGenerator from "../_components/cover-letter-generator";
 
+export const metadata = {
+  title: "Create Targeted Cover Letter",
+  description:
+    "Generate a targeted, high-impact cover letter tailored to a specific job description and company profile.",
+};
+
 export default function NewCoverLetterPage() {
   return (
     <div className="space-y-6">

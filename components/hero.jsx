@@ -58,9 +58,11 @@ const HeroSection = () => {
               src="/banner.jpeg"
               width={1280}
               height={720}
-              alt="Dashboard Preview"
+              alt="Sensai AI Career Coach Dashboard Preview"
               className="rounded-lg shadow-2xl border mx-auto"
               priority
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 1200px"
+              quality={85}
             />
           </div>
         </div>

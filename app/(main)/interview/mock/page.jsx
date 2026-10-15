@@ -3,6 +3,12 @@ import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Quiz from "../_components/quiz";
 
+export const metadata = {
+  title: "Mock Interview Assessment",
+  description:
+    "Test your domain expertise and core skills with industry-specific AI mock interview assessments.",
+};
+
 export default function MockInterviewPage() {
   return (
     <div className="space-y-6">

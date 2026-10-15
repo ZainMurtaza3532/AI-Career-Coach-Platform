@@ -4,6 +4,23 @@ import { Button } from "@/components/ui/button";
 import { getCoverLetter } from "@/actions/cover-letter";
 import CoverLetterPreview from "../_components/cover-letter-preview";
 
+export async function generateMetadata({ params }) {
+  const { id } = await params;
+  const coverLetter = await getCoverLetter(id);
+
+  if (!coverLetter) {
+    return {
+      title: "Cover Letter",
+      description: "Review and export your customized cover letter.",
+    };
+  }
+
+  return {
+    title: `${coverLetter.jobTitle} at ${coverLetter.companyName} | Cover Letter`,
+    description: `Review and export your AI-tailored cover letter for ${coverLetter.jobTitle} at ${coverLetter.companyName}.`,
+  };
+}
+
 export default async function EditCoverLetterPage({ params }) {
   const { id } = await params;
   const coverLetter = await getCoverLetter(id);

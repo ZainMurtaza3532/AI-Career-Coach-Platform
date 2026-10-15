@@ -12,9 +12,19 @@ import {
   Printer,
   Save,
 } from "lucide-react";
+import dynamic from "next/dynamic";
 import { toast } from "sonner";
-import MDEditor from "@uiw/react-md-editor";
 import { Button } from "@/components/ui/button";
+
+const MDEditor = dynamic(() => import("@uiw/react-md-editor"), {
+  ssr: false,
+  loading: () => (
+    <div className="h-[600px] w-full flex flex-col items-center justify-center gap-2 border border-border rounded-lg bg-card/40 text-muted-foreground text-sm">
+      <Loader2 className="h-6 w-6 animate-spin text-primary" />
+      <span>Loading Markdown Editor...</span>
+    </div>
+  ),
+});
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";

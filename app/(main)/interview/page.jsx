@@ -8,6 +8,12 @@ import { Phone, Mic, Code2 } from "lucide-react";
 import { checkUser } from "@/lib/checkUser";
 import { getIndustryCapabilities } from "@/lib/industryCapabilities";
 
+export const metadata = {
+  title: "Interview Preparation & Performance Hub",
+  description:
+    "Prepare for technical, behavioral, and phone screen interviews with live AI agents, mock tests, and performance tracking.",
+};
+
 export default async function InterviewPrepPage({ searchParams }) {
   const resolvedParams = await searchParams;
   const isRestricted = resolvedParams?.restricted === "coding-sandbox";

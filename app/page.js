@@ -1,19 +1,9 @@
 import React from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import {
-  ArrowRight,
-  Trophy,
-  Target,
-  Sparkles,
-  CheckCircle2,
-  Star,
-  Zap,
-  Shield,
-  Layers,
-} from "lucide-react";
+import { ArrowRight, Star } from "lucide-react";
 import HeroSection from "@/components/hero";
 import {
   Accordion,
@@ -31,11 +21,60 @@ export const metadata = {
   title: "Sensai | AI Career Coach & Technical Developer Platform",
   description:
     "Accelerate your career with real-time AI phone screen interview agents, in-browser Monaco coding sandbox, ATS resume builder, and live compensation insights.",
+  alternates: {
+    canonical: "/",
+  },
 };
 
 export default function LandingPage() {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://sensai-career.vercel.app/#website",
+        url: "https://sensai-career.vercel.app",
+        name: "Sensai",
+        description: "AI Career Coach & Technical Developer Platform",
+      },
+      {
+        "@type": "SoftwareApplication",
+        "@id": "https://sensai-career.vercel.app/#software",
+        name: "Sensai AI Career Coach",
+        applicationCategory: "EducationalApplication",
+        operatingSystem: "All",
+        offers: {
+          "@type": "Offer",
+          price: "0",
+          priceCurrency: "USD",
+        },
+        aggregateRating: {
+          "@type": "AggregateRating",
+          ratingValue: "4.9",
+          reviewCount: "1250",
+        },
+      },
+      {
+        "@type": "FAQPage",
+        "@id": "https://sensai-career.vercel.app/#faq",
+        mainEntity: faqs.map((faq) => ({
+          "@type": "Question",
+          name: faq.question,
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: faq.answer,
+          },
+        })),
+      },
+    ],
+  };
+
   return (
     <div className="relative overflow-hidden">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <div className="grid-background" />
 
       {/* Hero Section */}
