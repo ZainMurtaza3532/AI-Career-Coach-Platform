@@ -25,6 +25,16 @@ const MDEditor = dynamic(() => import("@uiw/react-md-editor"), {
     </div>
   ),
 });
+
+const MDMarkdown = dynamic(
+  () =>
+    import("@uiw/react-md-editor").then((mod) => ({
+      default: mod.default?.Markdown || mod.Markdown,
+    })),
+  { ssr: false }
+);
+MDEditor.Markdown = MDMarkdown;
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
@@ -498,7 +508,7 @@ const ResumeBuilder = forwardRef(function ResumeBuilder(
         aria-hidden="true"
       >
         <div id="resume-pdf" className="p-8 bg-white text-black font-sans">
-          <MDEditor.Markdown
+          <MDMarkdown
             source={previewContent || ""}
             style={{
               background: "white",
@@ -510,7 +520,7 @@ const ResumeBuilder = forwardRef(function ResumeBuilder(
 
       {/* Printable Area for Native Client Print Stylesheet */}
       <div className="resume-print-area hidden">
-        <MDEditor.Markdown
+        <MDMarkdown
           source={previewContent}
           style={{
             background: "transparent",

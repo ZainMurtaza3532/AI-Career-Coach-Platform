@@ -27,31 +27,11 @@ model User {
   assessments   Assessment[]
   resumes       Resume[]
   coverLetter   CoverLetter[]
-  behavioralInterviews BehavioralInterview[]
-  liveInterviews LiveInterviewSession[]
   codingAssessments CodingAssessment[]
 
   @@index([industry])
 }
 
-model LiveInterviewSession {
-  id                  String    @id @default(cuid())
-  userId              String
-  user                User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  persona             String    // "FAANG Engineering Lead", "Empathetic HR Manager", "Startup CTO"
-  targetRole          String?
-  durationSeconds     Int       @default(0)
-  overallScore        Float     // 1-10
-  metrics             Json      // { technicalAccuracy: number, clarity: number, pacingWpm: number, confidence: number }
-  conversation        Json[]    // Array of { role: "interviewer" | "candidate", text: string, timestamp: string }
-  summaryFeedback     String?   @db.Text
-  strengths           String[]
-  improvements        String[]
-  createdAt           DateTime  @default(now())
-  updatedAt           DateTime  @updatedAt
-
-  @@index([userId, createdAt(sort: Desc)])
-}
 
 model CodingAssessment {
   id              String   @id @default(cuid())
@@ -78,21 +58,6 @@ model CodingAssessment {
   optimalSolution String?  @db.Text
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
-
-  @@index([userId, createdAt(sort: Desc)])
-}
-
-model BehavioralInterview {
-  id              String    @id @default(cuid())
-  userId          String
-  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  targetRole      String?
-  overallScore    Float     // 1-10 overall average STAR score
-  starScores      Json      // { situation: number, task: number, action: number, result: number, clarity: number }
-  questions       Json[]    // Array of { question, transcript, evaluation }
-  feedback        String?   // Overall summary feedback
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
 
   @@index([userId, createdAt(sort: Desc)])
 }

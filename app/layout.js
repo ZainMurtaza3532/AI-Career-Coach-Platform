@@ -32,14 +32,13 @@ export const metadata = {
     template: "%s | Sensai",
   },
   description:
-    "Comprehensive AI career coach platform with intelligent resume building, voice behavioral mock interviews, live phone screen agents, and technical coding sandboxes.",
+    "Comprehensive AI career coach platform with intelligent resume building, domain interview assessments, and technical coding sandboxes.",
   keywords: [
     "AI career coach",
     "technical interview preparation",
     "mock interview AI",
     "ATS resume builder",
     "coding sandbox",
-    "phone screen simulator",
     "AI cover letter generator",
     "career growth platform",
   ],
@@ -63,7 +62,7 @@ export const metadata = {
     url: siteUrl,
     title: "Sensai | AI Career Coach & Developer Platform",
     description:
-      "Accelerate your career with real-time AI phone screen interview agents, in-browser Monaco coding sandbox, ATS resume builder, and live compensation insights.",
+      "Accelerate your career with an in-browser Monaco coding sandbox, ATS resume builder, domain interview assessments, and live compensation insights.",
     siteName: "Sensai",
     images: [
       {
@@ -78,7 +77,7 @@ export const metadata = {
     card: "summary_large_image",
     title: "Sensai | AI Career Coach & Developer Platform",
     description:
-      "Accelerate your career with real-time AI phone screen interview agents, in-browser Monaco coding sandbox, ATS resume builder, and live compensation insights.",
+      "Accelerate your career with an in-browser Monaco coding sandbox, ATS resume builder, domain interview assessments, and live compensation insights.",
     images: ["/banner.jpeg"],
   },
   icons: {

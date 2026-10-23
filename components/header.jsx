@@ -7,9 +7,7 @@ import {
   GraduationCap,
   ChevronDown,
   StarsIcon,
-  Mic,
   Share2,
-  PhoneCall,
   Code2,
 } from "lucide-react";
 import Link from "next/link";
@@ -100,24 +98,7 @@ export default async function Header() {
                     </Link>
                   </DropdownMenuItem>
                 )}
-                <DropdownMenuItem asChild>
-                  <Link
-                    href="/interview/voice"
-                    className="flex items-center gap-2"
-                  >
-                    <Mic className="h-4 w-4" />
-                    Behavioral Mock
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link
-                    href="/interview/live-agent"
-                    className="flex items-center gap-2"
-                  >
-                    <PhoneCall className="h-4 w-4" />
-                    Phone Screen Agent
-                  </Link>
-                </DropdownMenuItem>
+
                 <DropdownMenuItem asChild>
                   <Link
                     href="/ai-networking"

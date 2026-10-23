@@ -20,7 +20,7 @@ import { howItWorks } from "@/data/howItWorks";
 export const metadata = {
   title: "Sensai | AI Career Coach & Technical Developer Platform",
   description:
-    "Accelerate your career with real-time AI phone screen interview agents, in-browser Monaco coding sandbox, ATS resume builder, and live compensation insights.",
+    "Accelerate your career with an in-browser Monaco coding sandbox, ATS resume builder, domain interview assessments, and live compensation insights.",
   alternates: {
     canonical: "/",
   },
@@ -91,7 +91,7 @@ export default function LandingPage() {
               Everything You Need to Land Tier-1 Offers
             </h2>
             <p className="text-muted-foreground text-sm sm:text-base leading-relaxed">
-              From live voice phone screens to algorithmic Big-O audits and ATS resume generation, Sensai empowers your entire career pipeline.
+              From algorithmic Big-O code audits and domain assessments to ATS resume generation, Sensai empowers your entire career pipeline.
             </p>
           </div>
 

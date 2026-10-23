@@ -4,14 +4,14 @@ import PerformanceChart from "./_components/performace-chart";
 import QuizList from "./_components/quiz-list";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Phone, Mic, Code2 } from "lucide-react";
+import { Code2, BookOpen } from "lucide-react";
 import { checkUser } from "@/lib/checkUser";
 import { getIndustryCapabilities } from "@/lib/industryCapabilities";
 
 export const metadata = {
   title: "Interview Preparation & Performance Hub",
   description:
-    "Prepare for technical, behavioral, and phone screen interviews with live AI agents, mock tests, and performance tracking.",
+    "Prepare for technical domain and coding interviews with live assessments, Monaco code sandbox, and performance tracking.",
 };
 
 export default async function InterviewPrepPage({ searchParams }) {
@@ -41,31 +41,25 @@ export default async function InterviewPrepPage({ searchParams }) {
             Interview Preparation
           </h1>
           <p className="text-muted-foreground text-sm md:text-base mt-1">
-            Practice domain quizzes, phone screen agents, and behavioral mocks.
+            Master technical domain quizzes, algorithmic problem-solving, and track your assessment growth.
           </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-2.5">
+          <Link href="/interview/mock">
+            <Button variant="outline" className="gap-2 border-primary/40 shadow-sm text-xs sm:text-sm">
+              <BookOpen className="h-4 w-4" />
+              Domain Assessment Quiz
+            </Button>
+          </Link>
           {capabilities.hasCodingSandbox && (
             <Link href="/interview/coding">
-              <Button variant="outline" className="gap-2 border-primary/40 shadow-sm text-xs sm:text-sm">
+              <Button variant="default" className="gap-2 shadow-sm text-xs sm:text-sm">
                 <Code2 className="h-4 w-4" />
                 Coding Sandbox
               </Button>
             </Link>
           )}
-          <Link href="/interview/live-agent">
-            <Button variant="outline" className="gap-2 border-primary/40 shadow-sm text-xs sm:text-sm">
-              <Phone className="h-4 w-4" />
-              Live Phone Agent
-            </Button>
-          </Link>
-          <Link href="/interview/voice">
-            <Button variant="outline" className="gap-2 border-primary/40 shadow-sm text-xs sm:text-sm">
-              <Mic className="h-4 w-4" />
-              Voice Behavioral Mock
-            </Button>
-          </Link>
         </div>
       </div>
 

@@ -1,20 +1,13 @@
 import {
-  PhoneCall,
+  BookOpen,
   Code2,
-  Mic,
+  FileCheck,
   LineChart,
   ScrollText,
   Share2,
 } from "lucide-react";
 
 export const features = [
-  {
-    icon: <PhoneCall className="w-8 h-8 text-primary" />,
-    badge: "Voice AI",
-    title: "Live Phone Screen Interview Agent",
-    description:
-      "Engage in realistic two-way conversational phone screens with dynamic AI interviewers, active probing, and instant hiring bar verdicts.",
-  },
   {
     icon: <Code2 className="w-8 h-8 text-primary" />,
     badge: "Monaco Sandbox",
@@ -23,11 +16,18 @@ export const features = [
       "Solve algorithmic challenges in JavaScript, TypeScript, Python, and more with dark-mode Monaco editor, test assertion checks, and Big-O audits.",
   },
   {
-    icon: <Mic className="w-8 h-8 text-primary" />,
-    badge: "Speech Analysis",
-    title: "Voice Behavioral Mock Simulator",
+    icon: <BookOpen className="w-8 h-8 text-primary" />,
+    badge: "Adaptive Quiz",
+    title: "Domain Knowledge Assessments",
     description:
-      "Practice STAR-method responses with speech-to-text transcription, filler word tracking, pacing analytics, and model answers.",
+      "Test domain mastery with industry-calibrated technical assessments, instant explanations, personalized improvement tips, and performance tracking.",
+  },
+  {
+    icon: <FileCheck className="w-8 h-8 text-primary" />,
+    badge: "Cover Letters",
+    title: "Tailored AI Cover Letter Builder",
+    description:
+      "Generate high-impact, role-specific cover letters aligned with exact job descriptions and industry requirements in seconds.",
   },
   {
     icon: <LineChart className="w-8 h-8 text-primary" />,
